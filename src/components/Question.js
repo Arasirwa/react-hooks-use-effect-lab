@@ -5,17 +5,21 @@ function Question({ question, onAnswered }) {
 
   // add useEffect code
   useEffect(() => {
-    const timerID = setInterval(() => {
-      if (timeRemaining > 0) {
-        setTimeRemaining(timeRemaining - 1);
-      } else {
-        setTimeRemaining(10);
-        onAnswered(false);
-      }
+    if (timeRemaining === 0) {
+      setTimeRemaining(10);
+      onAnswered(false);
+      return; // allow the player to exit and go to the next question after answering the question
+    }
+
+    // set up a timeout to run after 1 second
+    const timerId = setTimeout(() => {
+      // decrement the time remaining
+      setTimeRemaining((timeRemaining) => timeRemaining - 1);
     }, 1000);
 
+    // clean up
     return function () {
-      clearInterval(timerID);
+      clearTimeout(timerId);
     };
   }, [timeRemaining, onAnswered]);
 
